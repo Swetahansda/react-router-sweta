@@ -1,0 +1,94 @@
+import { useState, useEffect } from "react";
+import "./App.css";
+import ProductCard from "./Productcart";
+import { products, categories } from "./data/products";
+
+function Home() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
+  // Filter products based on search and category
+  useEffect(() => {
+    let filtered = products;
+
+    // Filter by category
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(
+        (p) => p.category.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (p) =>
+          p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          p.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredProducts(filtered);
+  }, [searchTerm, selectedCategory]);
+
+  return (
+    <div className="home-container">
+      {/* Search Bar */}
+      <div className="search-section">
+        <input
+          type="text"
+          placeholder="🔍 Search for products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+      </div>
+
+      {/* Category Filter */}
+      <div className="category-filter">
+        <button
+          className={`category-btn ${selectedCategory === "all" ? "active" : ""}`}
+          onClick={() => setSelectedCategory("all")}
+        >
+          All Products
+        </button>
+        
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            className={`category-btn ${
+              selectedCategory === cat.id ? "active" : ""
+            }`}
+            onClick={() => setSelectedCategory(cat.id)}
+          >
+            {cat.icon} {cat.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Results info */}
+      <div className="results-info">
+        <p>
+          Showing <strong>{filteredProducts.length}</strong> products
+          {searchTerm && ` for "${searchTerm}"`}
+        </p>
+      </div>
+
+      {/* Products Grid */}
+      {filteredProducts.length > 0 ? (
+        <div className="product-container">
+          {filteredProducts.map((product) => (
+            <ProductCard key={product.id} {...product} />
+          ))}
+        </div>
+      ) : (
+        <div className="no-products">
+          <h2>😔 No products found</h2>
+          <p>Try adjusting your search or filter criteria</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Home;

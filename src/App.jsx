@@ -10,6 +10,7 @@ import logo from "./assets/logo.png";
 import ForgotPassword from "./ForgotPassword";
 import AccountInfo from "./AccountInfo";
 import AccountSecurity from "./AccountSecurity";
+import DeleteAccountMethod from "./DeleteAccountMethod";
 import Address from "./Address";
 import ProductDetails from "./ProductDetails";
 import Compare from "./Compare";
@@ -183,6 +184,7 @@ function App() {
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/new-email" element={<NewEmail onUserUpdate={handleUpdateUser} />} />
         <Route path="/account-security" element={<AccountSecurity />} />
+        <Route path="/delete-account/:method" element={<DeleteAccountMethod />} />
         <Route path="/address" element={<Address />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/settings" element={<AppSettings />} />

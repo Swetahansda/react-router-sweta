@@ -244,8 +244,8 @@ function DeleteAccountMethod() {
                 {verified && <div className="verified-badge">Verified ✓</div>}
               </div>
             )}
-
-            <div className="verification-actions">
+          <div className="center-container">
+                        <div className="verification-actions">
               <button className="btn-primary btn-wide" onClick={handleVerify}>
                 Verify
               </button>
@@ -263,9 +263,11 @@ function DeleteAccountMethod() {
 
             <div className="action-row action-row-last">
               <button className="btn-secondary btn-outline" onClick={() => navigate("/account-security")}>
-                Change method
+                Back  
               </button>
             </div>
+            </div>
+
           </div>
         </div>
       </div>

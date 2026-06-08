@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
+import Slider from "./Slider";
 import ProductCard from "./Productcart";
 import { products, categories } from "./data/products";
 
-function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
+function Home({ searchTerm, setSearchTerm }) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const resultsRef = useRef(null);
 
   // Filter products based on search and category
   useEffect(() => {
@@ -31,18 +32,15 @@ function Home() {
     setFilteredProducts(filtered);
   }, [searchTerm, selectedCategory]);
 
+  useEffect(() => {
+    if (searchTerm && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [searchTerm, filteredProducts.length]);
+
   return (
     <div className="home-container">
-      {/* Search Bar */}
-      <div className="search-section">
-        <input
-          type="text"
-          placeholder="🔍 Search for products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-      </div>
+      <Slider />
 
       {/* Category Filter */}
       <div className="category-filter">
@@ -67,7 +65,7 @@ function Home() {
       </div>
 
       {/* Results info */}
-      <div className="results-info">
+      <div className="results-info" ref={resultsRef}>
         <p>
           Showing <strong>{filteredProducts.length}</strong> products
           {searchTerm && ` for "${searchTerm}"`}

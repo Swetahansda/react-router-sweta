@@ -26,27 +26,6 @@ function Profile() {
 
   return (
     <div className="profile-page">
-
-      
-      <div className="profile-sidebar">
-        <h3>My Account</h3>
-        <ul className="profile-menu">
-          <li>Profile</li>
-          <li onClick={() => navigate("/myorders")}>
-  My Orders
-</li>
-    
-          <li>Settings</li>
-          <li
-            style={{ color: "red", cursor: "pointer" }}
-            onClick={handleLogout}
-          >
-            Logout
-          </li>
-        </ul>
-      </div>
-
-      {/* Main */}
       <div className="profile-card">
 
         <div className="profile-avatar">

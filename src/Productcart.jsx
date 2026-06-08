@@ -1,9 +1,13 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProductImage } from "./categoryImageMap";
 import "./App.css";
 
+const COMPARE_STORAGE_KEY = "compareProducts";
+
 function ProductCard(product) {
   const navigate = useNavigate();
+  const [isCompared, setIsCompared] = useState(false);
 
   const { id, title, price, originalPrice, discount, rating, reviews } = product;
 
@@ -42,6 +46,46 @@ function ProductCard(product) {
     navigate(`/product/${id}`, { state: product });
   };
 
+  const handleAddToCompare = (e) => {
+    e.stopPropagation();
+    const compareItems = JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY)) || [];
+
+    if (compareItems.some((item) => item.id === id)) {
+      alert(`${title} is already in Compare.`);
+      return;
+    }
+
+    if (compareItems.length >= 3) {
+      alert("You can compare up to 3 products only.");
+      return;
+    }
+
+    const nextCompare = [
+      ...compareItems,
+      {
+        id,
+        title,
+        price,
+        originalPrice,
+        discount,
+        rating,
+        reviews,
+        category: product.category,
+        description: product.description,
+        image: getProductImage(product)
+      }
+    ];
+
+    localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(nextCompare));
+    setIsCompared(true);
+    alert(`${title} added to Compare.`);
+  };
+
+  useEffect(() => {
+    const compareItems = JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY)) || [];
+    setIsCompared(compareItems.some((item) => item.id === id));
+  }, [id]);
+
   return (
     <div 
       className="product-card"
@@ -79,6 +123,14 @@ function ProductCard(product) {
             className="btn-add-cart"
           >
             🛒 Add to Cart
+          </button>
+          <button 
+            onClick={handleAddToCompare} 
+            className="btn-add-cart"
+            disabled={isCompared}
+            title={isCompared ? "Already added to Compare" : "Add to Compare"}
+          >
+            {isCompared ? "✅ Compared" : "🔍 Compare"}
           </button>
           <button 
             onClick={handleBuyNow} 

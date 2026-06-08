@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, NavLink, useNavigate, useLocation } from "react-router-dom";
 import Home from "./Home";
 import Addtocart from "./Addtocart";
@@ -8,7 +8,6 @@ import Signup from "./Signup";
 import "./App.css";
 import logo from "./assets/logo.png";
 import ForgotPassword from "./ForgotPassword";
-import Profile from "./Profile";
 import AccountInfo from "./AccountInfo";
 import AccountSecurity from "./AccountSecurity";
 import Address from "./Address";
@@ -19,6 +18,10 @@ import MyOrders from "./MyOrders";
 import AppSettings from "./AppSettings";
 import Policies from "./Policies";
 import Feedback from "./Feedback";
+import VerifyPassword from "./VerifyPassword";
+import NewPassword from "./NewPassword";
+import VerifyEmail from "./VerifyEmail";
+import NewEmail from "./NewEmail";
 
 
 
@@ -28,13 +31,25 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState("English");
+  const [currentUser, setCurrentUser] = useState(() => {
+    const userJson = localStorage.getItem("user");
+    return userJson ? JSON.parse(userJson) : null;
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn") === "true"
+  );
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const currentUser = isLoggedIn
-    ? JSON.parse(localStorage.getItem("user"))
-    : null;
-
   const location = useLocation();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    setCurrentUser(storedUser ? JSON.parse(storedUser) : null);
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+  }, [location.pathname]);
+
+  const handleUpdateUser = (updatedUser) => {
+    setCurrentUser(updatedUser);
+  };
   const closeMenu = () => setMenuOpen(false);
   const handleNavigate = (path) => {
     closeMenu();
@@ -84,15 +99,20 @@ function App() {
           <NavLink to="/">Home</NavLink>
           <NavLink to="/about">About</NavLink>
           <NavLink to="/compare">Compare</NavLink>
-          {isLoggedIn && currentUser ? (
-            <span className="nav-user">Hi, {currentUser.name}</span>
-          ) : (
-            <>
-              <NavLink to="/signin">Signin</NavLink>
-              <NavLink to="/signup">Signup</NavLink>
-            </>
-          )}
           <NavLink to="/cart">Cart</NavLink>
+          {isLoggedIn && currentUser ? (
+            <span className="nav-user">
+              {currentUser.avatar ? (
+                <img className="nav-user-avatar" src={currentUser.avatar} alt="Profile" />
+              ) : null}
+              <span>Hi, {currentUser.name}</span>
+            </span>
+          ) : (
+            <span className="nav-auth">
+              <button className="auth-btn" onClick={() => navigate('/signin')}>Sign in</button>
+              <button className="auth-btn" onClick={() => navigate('/signup')}>Sign up</button>
+            </span>
+          )}
         </nav>
       </div>
 
@@ -104,6 +124,7 @@ function App() {
         <div className="mobile-menu-content">
           {isLoggedIn && currentUser ? (
             <>
+              <div className="mobile-menu-heading">Settings</div>
               <button className="mobile-menu-link" onClick={() => handleNavigate("/account-info")}>Account Info</button>
               <button className="mobile-menu-link" onClick={() => handleNavigate("/account-security")}>Account Security</button>
               <button className="mobile-menu-link" onClick={() => handleNavigate("/address")}>My Address</button>
@@ -129,7 +150,11 @@ function App() {
               <button
                 className="mobile-menu-link mobile-menu-signout"
                 onClick={() => {
-                  localStorage.setItem("isLoggedIn", false);
+                  localStorage.removeItem("isLoggedIn");
+                  localStorage.removeItem("user");
+                  localStorage.clear();
+                  setCurrentUser(null);
+                  setIsLoggedIn(false);
                   closeMenu();
                   navigate("/signin");
                 }}
@@ -152,8 +177,11 @@ function App() {
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/account-info" element={<AccountInfo />} />
+        <Route path="/account-info" element={<AccountInfo onUserUpdate={handleUpdateUser} />} />
+        <Route path="/verify-password" element={<VerifyPassword />} />
+        <Route path="/new-password" element={<NewPassword onUserUpdate={handleUpdateUser} />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/new-email" element={<NewEmail onUserUpdate={handleUpdateUser} />} />
         <Route path="/account-security" element={<AccountSecurity />} />
         <Route path="/address" element={<Address />} />
         <Route path="/product/:id" element={<ProductDetails />} />

@@ -57,7 +57,7 @@ label {
 /* ========== NAVBAR ========== */
 .nav-links {
   margin: 0 auto;
-  padding: 12px 22px;
+  padding: 8px 22px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -113,7 +113,7 @@ label {
 
 nav {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 12px;
 }
@@ -138,6 +138,7 @@ nav a,
 nav span.nav-user {
   display: inline-flex;
   align-items: center;
+  gap: 10px;
   padding: 10px 16px;
   border-radius: 999px;
   text-decoration: none;
@@ -154,6 +155,14 @@ nav span.nav-user:hover {
   background: rgba(255, 255, 255, 1);
   border-color: rgba(226, 232, 240, 0.95);
   transform: translateY(-1px);
+}
+
+.nav-user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
 }
 
 nav a.active {
@@ -395,6 +404,8 @@ nav a.active {
   display: grid;
   gap: 16px;
   margin-top: 16px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
 }
 
 .mobile-menu-link {
@@ -412,6 +423,14 @@ nav a.active {
 .mobile-menu-link:hover {
   background: var(--surface-soft);
   transform: translateX(2px);
+}
+
+.mobile-menu-heading {
+  font-weight: 700;
+  color: var(--primary);
+  padding: 12px 18px;
+  margin-bottom: 8px;
+  border-bottom: 2px solid var(--primary-soft);
 }
 
 .mobile-menu-signout {
@@ -462,6 +481,11 @@ nav button {
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
+/* compact auth buttons wrapper to keep them inline */
+.nav-auth{display:inline-flex;gap:8px;align-items:center}
+.auth-btn{padding:8px 12px;min-width:initial;border-radius:999px;background:transparent;border:1px solid rgba(226,232,240,0.9);color:var(--dark);font-weight:700}
+.auth-btn:hover{background:var(--primary);color:white;border-color:transparent}
+
 nav button:hover {
   background: #e2581d;
   transform: translateY(-1px);
@@ -470,7 +494,7 @@ nav button:hover {
 /* ========== SLIDER ========== */
 .slider-shell {
   width: min(1400px, 100%);
-  margin: 18px auto 24px;
+  margin: -4px auto 24px;
   padding: 0 16px;
 }
 

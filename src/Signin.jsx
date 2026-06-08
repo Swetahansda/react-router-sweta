@@ -20,7 +20,7 @@ function Signin() {
     if (savedUser.email === email && savedUser.password === password) {
       localStorage.setItem("isLoggedIn", true);
       alert("Login successful ??");
-      navigate("/profile");
+      navigate("/account-info");
     } else {
       alert("Invalid email or password ?");
     }

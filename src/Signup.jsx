@@ -42,7 +42,7 @@ function Signup() {
 
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("isLoggedIn", true);
-    navigate("/profile");
+    navigate("/account-info");
   }
 
   return (

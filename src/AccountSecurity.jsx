@@ -6,11 +6,7 @@ function AccountSecurity() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const user = isLoggedIn ? JSON.parse(localStorage.getItem("user")) : null;
   const storageKey = user ? `accountSecurity_${user.email}` : null;
-  const initialSecurity = {
-    emailVerified: !!user?.email,
-    mobileVerified: false,
-    passwordVerified: false,
-  };
+ 
 
   const [securityState, setSecurityState] = useState(() => {
     if (!storageKey) return initialSecurity;

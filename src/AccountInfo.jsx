@@ -1,31 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import "./AccountInfo.css";
 import { useNavigate } from "react-router-dom";
 
-function AccountInfo() {
+function AccountInfo({ onUserUpdate }) {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const user = isLoggedIn ? JSON.parse(localStorage.getItem("user")) : null;
-
   const [editingField, setEditingField] = useState(null);
+  const fileInputRef = useRef(null);
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
-    password: "",
-    newPassword: "",
-    confirmPassword: "",
     language: "English",
     gender: "Not specified",
     birthday: "",
   });
 
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || null);
   const [successMessage, setSuccessMessage] = useState("");
-
-  const handleLogout = () => {
-    localStorage.setItem("isLoggedIn", false);
-    navigate("/signin");
-  };
 
   if (!isLoggedIn || !user) {
     return (
@@ -44,70 +36,95 @@ function AccountInfo() {
     }));
   };
 
+  const handleAvatarChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      setAvatarPreview(dataUrl);
+      if (user) {
+        const updatedUser = { ...user, avatar: dataUrl };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        onUserUpdate?.(updatedUser);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSaveFullName = () => {
     if (formData.fullName.trim()) {
       const updatedUser = { ...user, name: formData.fullName };
       localStorage.setItem("user", JSON.stringify(updatedUser));
+      onUserUpdate?.(updatedUser);
       setSuccessMessage("Full name updated successfully!");
       setEditingField(null);
       setTimeout(() => setSuccessMessage(""), 3000);
     }
   };
 
-  const handleChangePassword = () => {
-    if (
-      formData.newPassword &&
-      formData.newPassword === formData.confirmPassword
-    ) {
-      const updatedUser = { ...user, password: formData.newPassword };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      setSuccessMessage("Password changed successfully!");
-      setShowPasswordModal(false);
-      setFormData((prev) => ({
-        ...prev,
-        password: "",
-        newPassword: "",
-        confirmPassword: "",
-      }));
-      setTimeout(() => setSuccessMessage(""), 3000);
-    }
-  };
-
-  const handleChangeEmail = () => {
-    if (formData.email && formData.email.includes("@")) {
-      const updatedUser = { ...user, email: formData.email };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      setSuccessMessage("Email updated successfully!");
-      setShowEmailModal(false);
-      setTimeout(() => setSuccessMessage(""), 3000);
-    }
-  };
-
   return (
     <div className="account-info-page">
-      <div className="account-main">
+      <div className="account-wrapper">
+        <main className="account-main-right">
         {/* Header */}
-        <div className="account-header">
-          <div className="account-header-content">
-            <div className="account-avatar">
-              {user.name?.charAt(0).toUpperCase()}
+          <div className="account-header">
+            <div className="account-header-left">
+              <div className="avatar-wrapper">
+                <div className="account-avatar">
+                  {avatarPreview ? (
+                    <img src={avatarPreview} alt="avatar" />
+                  ) : (
+                    user?.name?.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <div className="avatar-actions">
+                  <input ref={fileInputRef} onChange={handleAvatarChange} id="avatarInput" type="file" accept="image/*" style={{ display: "none" }} />
+                  <button className="btn-upload" onClick={() => fileInputRef.current && fileInputRef.current.click()}>Upload</button>
+                  <button className="btn-remove" onClick={() => {
+                    setAvatarPreview(null);
+                    if (user) {
+                      const updatedUser = { ...user, avatar: null };
+                      localStorage.setItem("user", JSON.stringify(updatedUser));
+                      onUserUpdate?.(updatedUser);
+                    }
+                  }}>
+                    Remove
+                  </button>
+                </div>
+              </div>
             </div>
-            <div>
-              <h1>Personal Details</h1>
-              <p>Manage and update your account information</p>
+            <div className="account-header-content">
+              <div>
+                <h1>Manage your Profile</h1>
+                <p>Review your profile information, update settings, and keep your account secure.</p>
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Success Message */}
-        {successMessage && (
-          <div className="success-banner">
-            <span>✓ {successMessage}</span>
+          {successMessage && (
+            <div className="success-banner">
+              <span>✓ {successMessage}</span>
+            </div>
+          )}
+
+          <div className="account-summary-grid">
+            <div className="summary-card">
+              <span className="summary-label">Account status</span>
+              <h3>Active</h3>
+              <p>Your profile is up to date and ready to shop.</p>
+            </div>
+            <div className="summary-card">
+              <span className="summary-label">Member since</span>
+              <h3>2024</h3>
+              <p>You've been with us since your first purchase.</p>
+            </div>
+            
           </div>
-        )}
 
         {/* Account Details Grid */}
-        <div className="account-details-container">
+          <div className="account-details-container">
           {/* Full Name Section */}
           <div className="account-section">
             <div className="section-header">
@@ -161,44 +178,16 @@ function AccountInfo() {
               <h3>✉️ Email Address</h3>
             </div>
             <div className="account-item">
-              {!showEmailModal ? (
-                <>
-                  <div className="account-display">
-                    <span className="label">Current Email</span>
-                    <span className="value">{formData.email}</span>
-                  </div>
-                  <button
-                    className="btn-edit"
-                    onClick={() => setShowEmailModal(true)}
-                  >
-                    Change Email
-                  </button>
-                </>
-              ) : (
-                <div className="edit-field">
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter new email address"
-                  />
-                  <div className="button-group">
-                    <button
-                      className="btn-save"
-                      onClick={handleChangeEmail}
-                    >
-                      Update Email
-                    </button>
-                    <button
-                      className="btn-cancel"
-                      onClick={() => setShowEmailModal(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
+              <div className="account-display">
+                <span className="label">Current Email</span>
+                <span className="value">{formData.email}</span>
+              </div>
+              <button
+                className="btn-edit"
+                onClick={() => navigate("/verify-email")}
+              >
+                Change Email
+              </button>
             </div>
           </div>
 
@@ -208,51 +197,16 @@ function AccountInfo() {
               <h3>🔐 Password</h3>
             </div>
             <div className="account-item">
-              {!showPasswordModal ? (
-                <>
-                  <div className="account-display">
-                    <span className="label">Password</span>
-                    <span className="value">••••••••</span>
-                  </div>
-                  <button
-                    className="btn-edit"
-                    onClick={() => setShowPasswordModal(true)}
-                  >
-                    Change Password
-                  </button>
-                </>
-              ) : (
-                <div className="edit-field">
-                  <input
-                    type="password"
-                    name="newPassword"
-                    value={formData.newPassword}
-                    onChange={handleInputChange}
-                    placeholder="New Password"
-                  />
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder="Confirm Password"
-                  />
-                  <div className="button-group">
-                    <button
-                      className="btn-save"
-                      onClick={handleChangePassword}
-                    >
-                      Update Password
-                    </button>
-                    <button
-                      className="btn-cancel"
-                      onClick={() => setShowPasswordModal(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
+              <div className="account-display">
+                <span className="label">Password</span>
+                <span className="value">••••••••</span>
+              </div>
+              <button
+                className="btn-edit"
+                onClick={() => navigate("/verify-password")}
+              >
+                Change Password
+              </button>
             </div>
           </div>
 
@@ -322,26 +276,9 @@ function AccountInfo() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Account Security Info */}
-        <div className="account-security-section">
-          <h3>🛡️ Account Security</h3>
-          <div className="security-info-grid">
-            <div className="security-item">
-              <span className="security-label">Account Status</span>
-              <span className="security-value">Active ✓</span>
-            </div>
-            <div className="security-item">
-              <span className="security-label">Member Since</span>
-              <span className="security-value">2024</span>
-            </div>
-            <div className="security-item">
-              <span className="security-label">Verification</span>
-              <span className="security-value">Email Verified ✓</span>
-            </div>
           </div>
-        </div>
+
+        </main>
       </div>
     </div>
   );

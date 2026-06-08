@@ -1,14 +1,21 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import "./App.css";
 import placeholderImg from "./assets/Saree.jpg";
 
 
 function Checkout() {
-  const user = JSON.parse(localStorage.getItem("user"));
   const location = useLocation();
   const navigate = useNavigate();
-  const cartData = location.state;
+  const user = useMemo(() => JSON.parse(localStorage.getItem("user")), []);
+  const cartData = useMemo(() => {
+    const state = location.state;
+    if (state && (state.items || state.title)) {
+      return state;
+    }
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    return { items: savedCart };
+  }, [location.state]);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -22,7 +29,10 @@ function Checkout() {
     paymentMethod: "card"
   });
 
+  const [savedAddresses, setSavedAddresses] = useState([]);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderInfo, setOrderInfo] = useState(null);
+  const redirectTimeoutRef = useRef(null);
 
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
@@ -33,11 +43,53 @@ function Checkout() {
     }
   }, [isLoggedIn, navigate]);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const storedAddresses = JSON.parse(localStorage.getItem(`addresses_${user.email}`)) || [];
+    setSavedAddresses(storedAddresses);
+
+    const [firstName = "", ...restName] = (user.name || "").split(" ");
+    const lastName = restName.join(" ");
+
+    if (storedAddresses.length > 0) {
+      const latestAddress = storedAddresses[0];
+      setFormData((prev) => ({
+        ...prev,
+        firstName,
+        lastName,
+        email: user.email || prev.email,
+        phone: latestAddress.phone || prev.phone,
+        address: latestAddress.address || prev.address,
+        city: latestAddress.city || prev.city,
+        state: latestAddress.region || prev.state,
+        pincode: latestAddress.pincode || prev.pincode,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        firstName,
+        lastName,
+        email: user.email || prev.email,
+      }));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, []);
+
   if (!isLoggedIn) {
     return null;
   }
 
-  if (!cartData || (!cartData.items && !cartData.title)) {
+  const items = cartData?.items?.length ? cartData.items : cartData?.title ? [cartData] : [];
+
+  if (items.length === 0) {
     return (
       <div className="error-container">
         <h2>😔 No items to checkout</h2>
@@ -47,8 +99,6 @@ function Checkout() {
       </div>
     );
   }
-
-  const items = cartData.items || [cartData];
 
   const calculateTotals = () => {
     const subtotal = items.reduce(
@@ -71,48 +121,72 @@ function Checkout() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handlePlaceOrder = (e) => {
-    e.preventDefault();
+  const getShippingAddress = () => {
+    if (savedAddresses.length === 0) return null;
+    const latestAddress = savedAddresses[0];
+    return {
+      recipient: latestAddress.recipient,
+      address: latestAddress.address,
+      city: latestAddress.city,
+      state: latestAddress.region,
+      pincode: latestAddress.pincode || "",
+      phone: latestAddress.phone,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+    };
+  };
 
-   
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.address ||
-      !formData.city ||
-      !formData.state ||
-      !formData.pincode
-    ) {
-      alert("Please fill in all required fields");
+  const handlePlaceOrder = (e) => {
+    if (e) e.preventDefault();
+
+    const shippingAddress = getShippingAddress();
+    if (!shippingAddress) {
+      alert("Please save an address first before placing your order.");
       return;
     }
 
-  
+    if (
+      !shippingAddress.recipient ||
+      !shippingAddress.address ||
+      !shippingAddress.city ||
+      !shippingAddress.state ||
+      !shippingAddress.phone
+    ) {
+      alert("Please save a valid shipping address before placing your order.");
+      return;
+    }
+
     const order = {
-  orderId: "ORD" + Date.now(),
-  date: new Date().toLocaleDateString(),
-  items,
-
-  userEmail: user?.email,  
-
-  shippingAddress: formData,
-  paymentMethod: formData.paymentMethod,
-  totals: { subtotal, discount, shipping, total },
-  status: "Order Placed"
-};
+      orderId: "ORD" + Date.now(),
+      date: new Date().toLocaleDateString(),
+      items,
+      userEmail: user?.email,
+      shippingAddress,
+      paymentMethod: formData.paymentMethod,
+      totals: { subtotal, discount, shipping, total },
+      status: "Order Placed",
+    };
 
     const orders = JSON.parse(localStorage.getItem("orders")) || []; //string → object
     orders.push(order);  // add new order
     localStorage.setItem("orders", JSON.stringify(orders)); //save in browser
     localStorage.removeItem("cart"); //after order remove product form cart
 
+    setOrderInfo({ orderId: order.orderId, date: order.date });
     setOrderPlaced(true);
 
-setTimeout(() => {
-  navigate("/myorders");  //Wait 2 seconds, then go to My Orders page”
-}, 2000);
+    redirectTimeoutRef.current = setTimeout(() => {
+      navigate("/myorders");
+    }, 2000);
+  };
+
+  const handleContinueShopping = () => {
+    if (redirectTimeoutRef.current) {
+      clearTimeout(redirectTimeoutRef.current);
+      redirectTimeoutRef.current = null;
+    }
+    navigate("/");
   };
 
   if (orderPlaced) {
@@ -125,7 +199,11 @@ setTimeout(() => {
         <div className="order-details-success">
           <div className="detail-row">
             <span>Order ID:</span>
-            <strong>ORD{Date.now()}</strong>
+            <strong>{orderInfo?.orderId || "ORD000"}</strong>
+          </div>
+          <div className="detail-row">
+            <span>Order Date:</span>
+            <strong>{orderInfo?.date || ""}</strong>
           </div>
           <div className="detail-row">
             <span>Total Amount:</span>
@@ -156,7 +234,10 @@ setTimeout(() => {
           🚚 Your order will be delivered within 3-5 business days
         </p>
 
-        <button onClick={() => navigate("/")} className="btn-primary">
+        <button
+          onClick={handleContinueShopping}
+          className="btn-primary"
+        >
           Continue Shopping
         </button>
       </div>
@@ -171,6 +252,27 @@ setTimeout(() => {
         {/* Order Summary */}
         <div className="order-summary-section">
           <h2>Order Summary</h2>
+          {savedAddresses.length > 0 ? (
+            <div className="saved-address-card">
+              <h3>Saved Shipping Address</h3>
+              <p>
+                <strong>
+                  {savedAddresses[0].recipient || `${formData.firstName} ${formData.lastName}`}
+                </strong>
+              </p>
+              <p>{savedAddresses[0].address}</p>
+              <p>
+                {savedAddresses[0].city}, {savedAddresses[0].region}
+                {savedAddresses[0].pincode ? ` - ${savedAddresses[0].pincode}` : ""}
+              </p>
+              <p>Phone: {savedAddresses[0].phone}</p>
+            </div>
+          ) : (
+            <div className="saved-address-card no-address">
+              <h3>No saved address found</h3>
+              <p>Please save your address on the My Address page before placing your order.</p>
+            </div>
+          )}
           <div className="checkout-items">
             {items.map((item, idx) => (
               <div key={idx} className="checkout-item">
@@ -214,101 +316,7 @@ setTimeout(() => {
         </div>
 
         {/* Checkout Form */}
-        <form onSubmit={handlePlaceOrder} className="checkout-form">
-          <h2>Shipping Address</h2>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>First Name *</label>
-              <input
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Last Name *</label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Email *</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Phone *</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                placeholder="10-digit number"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Address *</label>
-            <textarea
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-              placeholder="Street address"
-              required
-            ></textarea>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>City *</label>
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>State *</label>
-              <input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Pincode *</label>
-              <input
-                type="text"
-                name="pincode"
-                value={formData.pincode}
-                onChange={handleInputChange}
-                placeholder="6-digit pincode"
-                required
-              />
-            </div>
-          </div>
-
+        <div className="checkout-form">
           <h2>Payment Method</h2>
           <div className="payment-methods">
             <label className="payment-option">
@@ -351,11 +359,15 @@ setTimeout(() => {
             >
               ← Back to Cart
             </button>
-            <button type="submit" className="btn-place-order">
+            <button
+              type="button"
+              onClick={handlePlaceOrder}
+              className="btn-place-order"
+            >
               Place Order (Rs. {total.toLocaleString()})
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

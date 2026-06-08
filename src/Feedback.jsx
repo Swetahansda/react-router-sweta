@@ -8,6 +8,7 @@ function Feedback() {
   const [comment, setComment] = useState("");
   const [photo, setPhoto] = useState(null);
   const [status, setStatus] = useState("Pending Review");
+  const [submitted, setSubmitted] = useState(false);
 
   const handlePhotoChange = (event) => {
     const file = event.target.files[0];
@@ -19,6 +20,7 @@ function Feedback() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setStatus("Submitted");
+    setSubmitted(true);
   };
 
   return (
@@ -29,36 +31,11 @@ function Feedback() {
       </div>
 
       <form className="feedback-form" onSubmit={handleSubmit}>
-        <div className="feedback-section">
-          <h2>Order/Product Information</h2>
-          <div className="input-group">
-            <label>Product name</label>
-            <input
-              type="text"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-              placeholder="Enter the product name"
-            />
+        {submitted && (
+          <div className="feedback-success-banner">
+            <strong>Thank you!</strong> Your feedback has been submitted successfully.
           </div>
-          <div className="input-group">
-            <label>Product image</label>
-            <input
-              type="text"
-              value={photo ? photo.name : ""}
-              placeholder="Upload a product photo below or add the image name"
-              disabled
-            />
-          </div>
-          <div className="input-group">
-            <label>Order ID</label>
-            <input
-              type="text"
-              value={orderId}
-              onChange={(e) => setOrderId(e.target.value)}
-              placeholder="Enter your order ID"
-            />
-          </div>
-        </div>
+        )}
 
         <div className="feedback-section">
           <h2>Rating</h2>
@@ -102,7 +79,7 @@ function Feedback() {
       </form>
 
       <div className="feedback-status">
-        <strong>Previous Feedback Status (Optional):</strong> {status}
+        <strong>Current Status:</strong> {status}
       </div>
     </div>
   );

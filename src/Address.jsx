@@ -20,6 +20,7 @@ function Address() {
     landmark: "",
     recipient: "",
     phone: "",
+    pincode: "",
   });
   const [message, setMessage] = useState("");
 
@@ -52,6 +53,7 @@ function Address() {
       landmark: "",
       recipient: "",
       phone: "",
+      pincode: "",
     });
     setSelectedIndex(-1);
   };
@@ -62,7 +64,7 @@ function Address() {
   };
 
   const handleSaveAddress = () => {
-    if (!formData.region || !formData.city || !formData.address || !formData.recipient || !formData.phone) {
+    if (!formData.region || !formData.city || !formData.address || !formData.recipient || !formData.phone || !formData.pincode) {
       setMessage("Please fill in all required fields before saving.");
       return;
     }
@@ -140,7 +142,10 @@ function Address() {
                 >
                   <strong>{item.recipient}</strong>
                   <span>{item.address}</span>
-                  <span>{item.city}, {item.region}</span>
+                  <span>
+                    {item.city}, {item.region}
+                    {item.pincode ? ` - ${item.pincode}` : ""}
+                  </span>
                 </button>
               ))
             )}
@@ -152,13 +157,23 @@ function Address() {
           <div className="address-form-card">
             <div className="section-title">Address Details</div>
             <label>
-              Region / City / District *
+              Region / State *
               <input
                 type="text"
                 name="region"
                 value={formData.region}
                 onChange={handleInputChange}
-                placeholder="Region / City / District"
+                placeholder="Region / State"
+              />
+            </label>
+            <label>
+              City / District *
+              <input
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                placeholder="City / District"
               />
             </label>
             <label>
@@ -179,6 +194,16 @@ function Address() {
                 value={formData.landmark}
                 onChange={handleInputChange}
                 placeholder="Landmark, building name, nearby spot"
+              />
+            </label>
+            <label>
+              Pincode *
+              <input
+                type="text"
+                name="pincode"
+                value={formData.pincode}
+                onChange={handleInputChange}
+                placeholder="Pincode"
               />
             </label>
             <label>

@@ -39,7 +39,8 @@ function Compare() {
         <div className="compare-grid">
           {compareItems.map((product) => (
             <div className="compare-card" key={product.id}>
-              <img src={getProductImage(product)} alt={product.title} className="compare-image" />
+              <img src={getProductImage(product)} 
+              alt={product.title} className="compare-image" />
               <div className="compare-body">
                 <h3>{product.title}</h3>
                 <p className="compare-category">{product.category}</p>

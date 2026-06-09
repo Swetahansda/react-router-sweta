@@ -516,7 +516,7 @@ nav button:hover {
 
 .slider-track {
   display: flex;
-  transition: transform 0.55s ease;
+  transition: transform 1.2s ease;
 }
 
 .slide-panel {
@@ -565,12 +565,14 @@ nav button:hover {
   font-size: clamp(2rem, 3vw, 3.2rem);
   margin: 0 0 12px;
   line-height: 1.05;
+    color: rgb(9, 9, 39);
 }
 
 .slide-subtitle {
-  font-size: 1rem;
+  font-size: 20px;
   max-width: 560px;
   line-height: 1.8;
+  color: rgb(9, 9, 39);
 }
 
 .slider-action {

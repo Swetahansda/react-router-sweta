@@ -1201,15 +1201,22 @@ nav button:hover {
 .btn-add-to-cart-large,
 .btn-buy-now-large,
 .btn-checkout-primary,
-.btn-place-order,
+
 .btn-continue-shopping,
 .btn-back,
 .btn-clear-cart,
 .btn-primary {
-  border-radius: 999px;
+  border-radius: 910px;
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.place-order-btn {
+    border: 2px solid;
+    padding: 10px 15px; /* top-bottom | left-right */
+    border-radius: 20px;
+    background: #ff6b35;
+    color: white;
 }
 
 .btn-add-cart,
@@ -2157,12 +2164,31 @@ nav button:hover {
   transform: translateY(-2px);
 }
 
-.btn-wide { min-width: 140px; }
-.btn-outline { background: transparent; border: 1px solid #cbd5e1; color: var(--dark); }
+.btn-wide {
+   min-width: 140px;
+   }
+.btn-outline { 
+  background: transparent; 
+  border: 1px solid #cbd5e1; 
+  color: var(--dark);
+ }
 
-.warning-icon-large { width: 56px; height: 56px; display:grid; place-items:center; font-size:26px; border-radius:14px; background:linear-gradient(135deg,#fff7ed,#fff1f2); color:#b91c1c; }
+.warning-icon-large {
+   width: 56px;
+    height: 56px; 
+    display:grid; 
+    place-items:center;
+     font-size:26px;
+      border-radius:14px; 
+      background:linear-gradient(135deg,#fff7ed,#fff1f2);
+       color:#b91c1c; 
+      }
 
-.registered-info small { color:#475569; display:block; margin-top:6px; }
+.registered-info small {
+   color:#475569; 
+   display:block; 
+   margin-top:6px; 
+  }
 
 .verification-option span {
   display: block;
@@ -2203,17 +2229,74 @@ nav button:hover {
   padding: 14px 16px;
 }
 
-.method-card { padding: 14px; border-radius: 14px; background: linear-gradient(180deg,#ffffff,#fbfdff); border:1px solid #eef6ff; margin-top:12px; }
-.method-head { display:flex; gap:12px; align-items:center; margin-bottom:10px; }
-.method-icon { width:48px; height:48px; display:grid; place-items:center; border-radius:12px; background:var(--surface-soft); font-size:20px; }
-.muted { color:#64748b; font-size:0.95rem; }
-.input-with-icon { position:relative; display:flex; align-items:center; gap:8px; }
-.input-with-icon input { flex:1; padding-right:78px; }
-.show-hide-btn { position:absolute; right:8px; background:transparent; border:none; color:var(--dark); font-weight:700; padding:6px 10px; border-radius:10px; cursor:pointer; }
-.otp-input { border-radius:12px; padding:12px 14px; border:1px solid #cbd5e1; }
-.verified-badge { margin-top:12px; display:inline-block; background: linear-gradient(90deg,#ecfccb,#bbf7d0); color:#166534; padding:6px 12px; border-radius:999px; font-weight:800; }
+.method-card {
+   padding: 14px; 
+   border-radius: 14px; 
+   background: linear-gradient(180deg,#ffffff,#fbfdff);
+    border:1px solid #eef6ff;
+     margin-top:12px; 
+    }
+.method-head { 
+  display:flex; 
+  gap:12px; 
+  align-items:center;
+   margin-bottom:10px;
+   }
+.method-icon {
+   width:48px; 
+   height:48px; 
+   display:grid; 
+   place-items:center; 
+   border-radius:12px; 
+   background:var(--surface-soft); 
+   font-size:20px;
+   }
+.muted 
+{ color:#64748b;
+   font-size:0.95rem; 
+  }
+.input-with-icon { 
+  position:relative; 
+  display:flex;
+   align-items:center; 
+   gap:8px;
+   }
+.input-with-icon input {
+   flex:1;
+    padding: 10px 12px;
+    border-radius: 15px;
+  }
+.show-hide-btn { 
+  position:absolute;
+   right:8px; 
+   background:transparent; 
+   border:none; 
+   color:var(--dark); 
+   font-weight:700; 
+   padding:6px 10px;
+    border-radius:10px;
+     cursor:pointer; 
+    }
+.otp-input {
+   border-radius:12px;
+    padding:12px 14px; 
+    border:1px solid #cbd5e1; 
+  }
+.verified-badge { 
+  margin-top:12px; 
+  display:inline-block; 
+  background: linear-gradient(90deg,#ecfccb,#bbf7d0);
+   color:#166534; 
+   padding:6px 12px; 
+   border-radius:999px;
+    font-weight:800;
+   }
 
-.btn-delete[disabled], .btn-delete:disabled { opacity:0.5; cursor:not-allowed; }
+.btn-delete[disabled], 
+.btn-delete:disabled 
+{ opacity:0.5; 
+  cursor:not-allowed;
+ }
 
 .verification-actions {
   display: flex;

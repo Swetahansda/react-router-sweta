@@ -57,13 +57,13 @@ label {
 /* ========== NAVBAR ========== */
 .nav-links {
   margin: 0 auto;
-  padding: 8px 22px;
+  padding: 10px 22px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: rgba(255, 255, 255, 0.98);
+  background: #f97316;
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 32px;
   box-shadow: 0 22px 60px rgba(15, 23, 42, 0.08);
@@ -106,7 +106,7 @@ label {
 }
 
 .logo img {
-  width: 64px;
+  width: 75px;
   border-radius: 22px;
   border: 2px solid rgba(255, 107, 53, 0.25);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -126,14 +126,14 @@ nav {
 
 .nav-search-section {
   flex: 1 1 340px;
-   min-width: 300px;
-  max-width: 700px;
+  padding: 9px 0;
+ 
 }
 
 .nav-search-section .search-input {
   width: 100%;
   max-width: 600px;
-  padding: 20px 21px;
+  padding: 15px 21px;
   border-radius: 999px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   background: rgba(255, 255, 255, 0.96);
@@ -504,7 +504,7 @@ nav button:hover {
 /* ========== SLIDER ========== */
 .slider-shell {
   width: min(1400px, 100%);
-  margin: -1px auto 24px;
+  margin: 12px auto 30px;
   padding: 0 16px;
 }
 
@@ -892,7 +892,7 @@ nav button:hover {
 .my-orders-page {
   width: min(1320px, 100%);
   margin: 0 auto;
-  padding: calc(var(--nav-height) -12px) 18px 22px;
+  padding: calc(var(--nav-height) -90px) 18px 22px;
 }
 
 .auth-page {

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import sareeImg from "./assets/Saree.jpg";
-import phoneImg from "./assets/Smartphone.png";
+
 import imge from "./assets/frontimg.png";
+import phone from "./assets/phone.png";
 
 import "./App.css";
 
@@ -9,7 +10,7 @@ import "./App.css";
 const slides = [
 
   {
-  id: 4,
+  id: 1,
   image: imge,
 },
  
@@ -23,10 +24,8 @@ const slides = [
   },
   {
     id: 3,
-    title: "Gadgets for your everyday life",
-    subtitle: "Upgrade your home, office, and travel tech with great offers today.",
-    badge: "Hot Deals",
-    image: phoneImg,
+    
+    image: phone,
   },
 
 

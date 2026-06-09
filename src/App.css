@@ -504,7 +504,7 @@ nav button:hover {
 /* ========== SLIDER ========== */
 .slider-shell {
   width: min(1400px, 100%);
-  margin: -4px auto 24px;
+  margin: -1px auto 24px;
   padding: 0 16px;
 }
 
@@ -523,7 +523,7 @@ nav button:hover {
   width: 100%;
   min-width: 100%;
   position: relative;
-  height: 340px;
+  height: 420px;
 }
 
 .slide-image {
@@ -890,7 +890,7 @@ nav button:hover {
 .my-orders-page {
   width: min(1320px, 100%);
   margin: 0 auto;
-  padding: calc(var(--nav-height) + 4px) 18px 22px;
+  padding: calc(var(--nav-height) -12px) 18px 22px;
 }
 
 .auth-page {

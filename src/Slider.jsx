@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import heroImg from "./assets/hero.png";
 import sareeImg from "./assets/Saree.jpg";
 import phoneImg from "./assets/Smartphone.png";
+import imge from "./assets/frontimg.png";
+
 import "./App.css";
 
+
 const slides = [
+
   {
-    id: 1,
-    title: "Shop the latest styles",
-    subtitle: "Discover curated fashion picks and trending electronics for every budget.",
-    badge: "New Arrivals",
-    image: heroImg,
-  },
+  id: 4,
+  image: imge,
+},
+ 
+ 
   {
     id: 2,
     title: "Beauty essentials made easy",
@@ -26,6 +28,8 @@ const slides = [
     badge: "Hot Deals",
     image: phoneImg,
   },
+
+
 ];
 
 function Slider() {

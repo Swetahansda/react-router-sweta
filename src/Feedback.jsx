@@ -78,10 +78,7 @@ function Feedback() {
         </button>
       </form>
 
-      <div className="feedback-status">
-        <strong>Current Status:</strong> {status}
-      </div>
-    </div>
+       </div>
   );
 }
 

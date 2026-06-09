@@ -68,22 +68,24 @@ function App() {
   return (
     <>
       <div className="nav-links">
-        <button className="nav-hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
-          ☰
-        </button>
+        <div className="nav-brand-group">
+          <button className="nav-hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+            ☰
+          </button>
 
-        <div className="brand" onClick={handleLogoClick} role="button" tabIndex="0">
-          <div className="logo">
-            <img
-              src={logo}
-              alt="logo"
-              style={{ cursor: "pointer" }}
-            />
+          <div className="brand" onClick={handleLogoClick} role="button" tabIndex="0">
+            <div className="logo">
+              <img
+                src={logo}
+                alt="logo"
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+            <span className="brand-name">
+              <span className="brand-name-primary">Kin</span>
+              <span className="brand-name-secondary">nus</span>
+            </span>
           </div>
-          <span className="brand-name">
-            <span className="brand-name-primary">Kin</span>
-            <span className="brand-name-secondary">nus</span>
-          </span>
         </div>
 
         <div className="nav-search-section">

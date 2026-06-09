@@ -12,7 +12,15 @@ function Address() {
     return JSON.parse(localStorage.getItem(storageKey)) || [];
   });
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(() => {
+    return 0;
+  });
+  const [previewIndex, setPreviewIndex] = useState(() => {
+    return addresses.length > 0 ? 0 : -1;
+  });
+  const [showForm, setShowForm] = useState(() => {
+    return addresses.length === 0;
+  });
   const [formData, setFormData] = useState({
     region: "",
     city: "",
@@ -33,6 +41,8 @@ function Address() {
   useEffect(() => {
     if (addresses.length > 0) {
       setFormData(addresses[selectedIndex] || addresses[0]);
+      setPreviewIndex((currentPreviewIndex) => (currentPreviewIndex >= 0 ? currentPreviewIndex : 0));
+      setShowForm((currentShowForm) => (addresses.length === 0 ? true : currentShowForm));
     }
   }, [addresses, selectedIndex]);
 
@@ -56,6 +66,21 @@ function Address() {
       pincode: "",
     });
     setSelectedIndex(-1);
+    setPreviewIndex(-1);
+    setShowForm(true);
+  };
+
+  const handleEditAddress = () => {
+    if (addresses.length === 0) {
+      resetForm();
+      return;
+    }
+
+    const indexToEdit = selectedIndex >= 0 && selectedIndex < addresses.length ? selectedIndex : 0;
+    setSelectedIndex(indexToEdit);
+    setPreviewIndex(indexToEdit);
+    setFormData(addresses[indexToEdit]);
+    setShowForm(true);
   };
 
   const handleInputChange = (e) => {
@@ -75,23 +100,27 @@ function Address() {
       setMessage("Address updated successfully.");
     } else {
       updatedAddresses.push(formData);
-      setSelectedIndex(updatedAddresses.length - 1);
       setMessage("Address saved successfully.");
     }
 
     setAddresses(updatedAddresses);
+    const savedIndex = selectedIndex >= 0 && selectedIndex < updatedAddresses.length ? selectedIndex : updatedAddresses.length - 1;
+    setSelectedIndex(savedIndex);
+    setPreviewIndex(savedIndex);
+    setShowForm(false);
     setTimeout(() => setMessage(""), 2600);
   };
 
   const handleDeleteAddress = () => {
-    if (selectedIndex < 0 || selectedIndex >= addresses.length) {
+    if (addresses.length === 0) {
       setMessage("No address selected to delete.");
       return;
     }
 
-    const updatedAddresses = addresses.filter((_, index) => index !== selectedIndex);
+    const updatedAddresses = addresses.slice(1);
     setAddresses(updatedAddresses);
     setSelectedIndex(updatedAddresses.length > 0 ? 0 : -1);
+    setPreviewIndex(updatedAddresses.length > 0 ? 0 : -1);
     setFormData(updatedAddresses[0] || {
       region: "",
       city: "",
@@ -100,7 +129,8 @@ function Address() {
       recipient: "",
       phone: "",
     });
-    setMessage("Address deleted.");
+    setShowForm(updatedAddresses.length === 0);
+    setMessage("First saved address deleted.");
     setTimeout(() => setMessage(""), 2600);
   };
 
@@ -109,9 +139,6 @@ function Address() {
       <div className="address-main">
         <div className="account-header">
           <div className="account-header-content">
-            <div className="account-avatar account-avatar-large">
-              {user.name?.charAt(0).toUpperCase()}
-            </div>
             <div>
               <h1>My Address</h1>
               <p>Save your delivery address for faster checkout and seamless orders.</p>
@@ -125,35 +152,26 @@ function Address() {
           </div>
         )}
 
-        <div className="address-content-grid">
-          <div className="address-list-card">
-            <div className="section-title">Saved Addresses</div>
-            {addresses.length === 0 ? (
-              <p className="empty-text">No addresses saved yet. Add one below.</p>
-            ) : (
-              addresses.map((item, index) => (
-                <button
-                  key={index}
-                  className={`address-card ${selectedIndex === index ? "selected" : ""}`}
-                  onClick={() => {
-                    setSelectedIndex(index);
-                    setFormData(item);
-                  }}
-                >
-                  <strong>{item.recipient}</strong>
-                  <span>{item.address}</span>
-                  <span>
-                    {item.city}, {item.region}
-                    {item.pincode ? ` - ${item.pincode}` : ""}
-                  </span>
-                </button>
-              ))
-            )}
-            <button className="btn-secondary" onClick={resetForm}>
-              Add New Address
-            </button>
+        {!showForm && addresses.length > 0 && previewIndex >= 0 && addresses[previewIndex] ? (
+          <div className="saved-address-feature">
+            <div className="saved-address-feature-badge">Saved Address</div>
+            <h2>{addresses[previewIndex].recipient}</h2>
+            <p>{addresses[previewIndex].address}</p>
+            <p>
+              {addresses[previewIndex].city}, {addresses[previewIndex].region}
+              {addresses[previewIndex].pincode ? ` - ${addresses[previewIndex].pincode}` : ""}
+            </p>
+            {addresses[previewIndex].landmark ? <p>{addresses[previewIndex].landmark}</p> : null}
+            <p>{addresses[previewIndex].phone}</p>
+            <div className="saved-address-actions">
+              <button className="btn-secondary" onClick={handleEditAddress}>
+                Edit Address
+              </button>
+            </div>
           </div>
+        ) : null}
 
+        {showForm ? (
           <div className="address-form-card">
             <div className="section-title">Address Details</div>
             <label>
@@ -236,7 +254,7 @@ function Address() {
               </button>
             </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

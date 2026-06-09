@@ -8,6 +8,8 @@ const COMPARE_STORAGE_KEY = "compareProducts";
 function ProductCard(product) {
   const navigate = useNavigate();
   const [isCompared, setIsCompared] = useState(false);
+  const useCardActionStyle = ["Electronics", "Home", "Beauty"].includes(product.category);
+  const isSearchResult = Boolean(product.isSearchResult);
 
   const { id, title, price, originalPrice, discount, rating, reviews } = product;
 
@@ -88,7 +90,7 @@ function ProductCard(product) {
 
   return (
     <div 
-      className="product-card"
+      className={`product-card ${isSearchResult ? "product-card-search" : ""}`}
       onClick={() => navigate(`/product/${id}`, { state: product })}
     >
       <div className="product-image-wrapper">
@@ -117,7 +119,7 @@ function ProductCard(product) {
           <span className="original-price">Rs. {originalPrice}</span>
         </div>
 
-        <div className="product-actions">
+        <div className={`product-actions ${useCardActionStyle ? "product-actions-card" : ""}`}>
           <button 
             onClick={handleAddToCart} 
             className="btn-add-cart"

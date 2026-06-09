@@ -76,7 +76,7 @@ function Home({ searchTerm, setSearchTerm }) {
       {filteredProducts.length > 0 ? (
         <div className="product-container">
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
+            <ProductCard key={product.id} {...product} isSearchResult={Boolean(searchTerm)} />
           ))}
         </div>
       ) : (

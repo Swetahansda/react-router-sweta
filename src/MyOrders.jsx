@@ -92,13 +92,6 @@ function MyOrders() {
             </div>
 
             <div className="order-info">
-              <p>
-                <strong>Shipping Address:</strong>{" "}
-                {order.shippingAddress.address},{" "}
-                {order.shippingAddress.city},{" "}
-                {order.shippingAddress.state} -{" "}
-                {order.shippingAddress.pincode}
-              </p>
 
               <p>
                 <strong>Payment Method:</strong>{" "}

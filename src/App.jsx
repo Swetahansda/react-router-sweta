@@ -23,6 +23,7 @@ import VerifyPassword from "./VerifyPassword";
 import NewPassword from "./NewPassword";
 import VerifyEmail from "./VerifyEmail";
 import NewEmail from "./NewEmail";
+import Footer from "./Footer";
 
 
 
@@ -69,10 +70,6 @@ function App() {
     <>
       <div className="nav-links">
         <div className="nav-brand-group">
-          <button className="nav-hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
-            ☰
-          </button>
-
           <div className="brand" onClick={handleLogoClick} role="button" tabIndex="0">
             <div className="logo">
               <img
@@ -86,6 +83,24 @@ function App() {
               <span className="brand-name-secondary">nus</span>
             </span>
           </div>
+
+          {isLoggedIn && currentUser ? (
+            <button
+              className="profile-trigger"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label="Open profile menu"
+              aria-expanded={menuOpen}
+              type="button"
+            >
+              {currentUser.avatar ? (
+                <img className="profile-trigger-avatar" src={currentUser.avatar} alt="Profile" />
+              ) : (
+                <span className="profile-trigger-fallback" aria-hidden="true">
+                  👤
+                </span>
+              )}
+            </button>
+          ) : null}
         </div>
 
         <div className="nav-search-section">
@@ -99,18 +114,10 @@ function App() {
         </div>
 
         <nav>
-          <NavLink to="/">Home</NavLink>
           <NavLink to="/about">About</NavLink>
           <NavLink to="/compare">Compare</NavLink>
           <NavLink to="/cart">Cart</NavLink>
-          {isLoggedIn && currentUser ? (
-            <span className="nav-user">
-              {currentUser.avatar ? (
-                <img className="nav-user-avatar" src={currentUser.avatar} alt="Profile" />
-              ) : null}
-              <span>Hi, {currentUser.name}</span>
-            </span>
-          ) : (
+          {isLoggedIn && currentUser ? null : (
             <span className="nav-auth">
               <button className="auth-btn" onClick={() => navigate('/signin')}>Sign in</button>
               <button className="auth-btn" onClick={() => navigate('/signup')}>Sign up</button>
@@ -127,7 +134,20 @@ function App() {
         <div className="mobile-menu-content">
           {isLoggedIn && currentUser ? (
             <>
-              <div className="mobile-menu-heading">Settings</div>
+              <div className="mobile-menu-profile-header">
+                {currentUser.avatar ? (
+                  <img className="mobile-menu-profile-avatar" src={currentUser.avatar} alt="Profile" />
+                ) : (
+                  <div className="mobile-menu-profile-avatar mobile-menu-profile-fallback" aria-hidden="true">
+                    👤
+                  </div>
+                )}
+                <div>
+                  <div className="mobile-menu-profile-name">{currentUser.name}</div>
+                  <div className="mobile-menu-profile-subtitle">Profile menu</div>
+                </div>
+              </div>
+              <div className="mobile-menu-heading">Profile</div>
               <button className="mobile-menu-link" onClick={() => handleNavigate("/account-info")}>Account Info</button>
               <button className="mobile-menu-link" onClick={() => handleNavigate("/account-security")}>Account Security</button>
               <button className="mobile-menu-link" onClick={() => handleNavigate("/address")}>My Address</button>
@@ -198,6 +218,8 @@ function App() {
         <Route path="/compare" element={<Compare />} />
         <Route path="/myorders" element={<MyOrders />} />
       </Routes>
+
+      <Footer searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
     </>
   );
 }

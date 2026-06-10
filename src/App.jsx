@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Routes, Route, NavLink, useNavigate, useLocation } from "react-router-dom";
 import Home from "./Home";
 import Addtocart from "./Addtocart";
@@ -24,6 +24,7 @@ import NewPassword from "./NewPassword";
 import VerifyEmail from "./VerifyEmail";
 import NewEmail from "./NewEmail";
 import Footer from "./Footer";
+import  cart  from "./assets/cart.webp";
 
 
 
@@ -32,6 +33,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState("English");
   const [currentUser, setCurrentUser] = useState(() => {
     const userJson = localStorage.getItem("user");
@@ -42,12 +44,38 @@ function App() {
   );
   const navigate = useNavigate();
   const location = useLocation();
+  const profileMenuRef = useRef(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     setCurrentUser(storedUser ? JSON.parse(storedUser) : null);
     setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+    setShowProfileMenu(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleDocumentClick = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setShowProfileMenu(false);
+        setShowLanguageMenu(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setShowProfileMenu(false);
+        setShowLanguageMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleDocumentClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleDocumentClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   const handleUpdateUser = (updatedUser) => {
     setCurrentUser(updatedUser);
@@ -84,23 +112,17 @@ function App() {
             </span>
           </div>
 
-          {isLoggedIn && currentUser ? (
-            <button
-              className="profile-trigger"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label="Open profile menu"
-              aria-expanded={menuOpen}
-              type="button"
-            >
-              {currentUser.avatar ? (
-                <img className="profile-trigger-avatar" src={currentUser.avatar} alt="Profile" />
-              ) : (
-                <span className="profile-trigger-fallback" aria-hidden="true">
-                  👤
-                </span>
-              )}
-            </button>
-          ) : null}
+          <button
+            className="nav-hamburger"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="Open navigation menu"
+            aria-expanded={menuOpen}
+            type="button"
+          >
+            <span className="hamburger-bar" aria-hidden="true" />
+            <span className="hamburger-bar" aria-hidden="true" />
+            <span className="hamburger-bar" aria-hidden="true" />
+          </button>
         </div>
 
         <div className="nav-search-section">
@@ -114,9 +136,88 @@ function App() {
         </div>
 
         <nav>
-          <NavLink to="/about">About</NavLink>
-          <NavLink to="/compare">Compare</NavLink>
-          <NavLink to="/cart">Cart</NavLink>
+          <NavLink to="/cart" className="cart-link">
+  <img src={cart} alt="Cart" className="cart-icon" />
+  <span>Cart</span>
+</NavLink>
+          {isLoggedIn && currentUser ? (
+            <div className="nav-profile-wrap" ref={profileMenuRef}>
+              <button
+                className="nav-profile-trigger"
+                onClick={() => setShowProfileMenu((open) => !open)}
+                aria-label="Open profile menu"
+                aria-expanded={showProfileMenu}
+                type="button"
+              >
+                {currentUser.avatar ? (
+                  <img className="nav-profile-avatar" src={currentUser.avatar} alt="Profile" />
+                ) : (
+                  <span className="nav-profile-fallback" aria-hidden="true">
+                    👤
+                  </span>
+                )}
+              </button>
+
+              {showProfileMenu ? (
+                <div className="nav-profile-dropdown" role="menu" aria-label="Profile menu">
+                  <div className="nav-profile-header">
+                    {currentUser.avatar ? (
+                      <img className="nav-profile-header-avatar" src={currentUser.avatar} alt="Profile" />
+                    ) : (
+                      <div className="nav-profile-header-avatar nav-profile-header-fallback" aria-hidden="true">
+                        👤
+                      </div>
+                    )}
+                    <div>
+                      <div className="nav-profile-name">{currentUser.name}</div>
+                      <div className="nav-profile-subtitle">Profile menu</div>
+                    </div>
+                  </div>
+
+                  <button className="nav-profile-link" onClick={() => handleNavigate("/account-info")}>Account Info</button>
+                  <button className="nav-profile-link" onClick={() => handleNavigate("/account-security")}>Account Security</button>
+                  <button className="nav-profile-link" onClick={() => handleNavigate("/address")}>My Address</button>
+                  <button className="nav-profile-link" onClick={() => handleNavigate("/myorders")}>My Order</button>
+                  <button className="nav-profile-link" onClick={() => handleNavigate("/settings")}>App Setting</button>
+
+                  <div className="nav-profile-language">
+                    <button className="nav-profile-link" onClick={() => setShowLanguageMenu(!showLanguageMenu)}>
+                      Language: {currentLanguage}
+                    </button>
+                    {showLanguageMenu && (
+                      <div className="language-options nav-profile-language-options">
+                        <button className={`language-option ${currentLanguage === "English" ? "active" : ""}`} onClick={() => { setCurrentLanguage("English"); setShowLanguageMenu(false); }}>
+                          English
+                        </button>
+                        <button className={`language-option ${currentLanguage === "Nepali" ? "active" : ""}`} onClick={() => { setCurrentLanguage("Nepali"); setShowLanguageMenu(false); }}>
+                          नेपली
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <button className="nav-profile-link" onClick={() => handleNavigate("/policies")}>Policies</button>
+                  <button className="nav-profile-link" onClick={() => handleNavigate("/feedback")}>Feedback</button>
+                  <button
+                    className="nav-profile-link nav-profile-signout"
+                    onClick={() => {
+                      localStorage.removeItem("isLoggedIn");
+                      localStorage.removeItem("user");
+                      localStorage.clear();
+                      setCurrentUser(null);
+                      setIsLoggedIn(false);
+                      setShowProfileMenu(false);
+                      setShowLanguageMenu(false);
+                      closeMenu();
+                      navigate("/signin");
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
           {isLoggedIn && currentUser ? null : (
             <span className="nav-auth">
               <button className="auth-btn" onClick={() => navigate('/signin')}>Sign in</button>
@@ -132,6 +233,9 @@ function App() {
           ×
         </button>
         <div className="mobile-menu-content">
+          <div className="mobile-menu-heading">Explore</div>
+          <button className="mobile-menu-link" onClick={() => handleNavigate("/about")}>About Us</button>
+          <button className="mobile-menu-link" onClick={() => handleNavigate("/compare")}>Compare Product</button>
           {isLoggedIn && currentUser ? (
             <>
               <div className="mobile-menu-profile-header">

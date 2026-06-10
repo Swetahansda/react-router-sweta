@@ -14,43 +14,7 @@ function Footer({ searchTerm, setSearchTerm }) {
   return (
     <footer className="site-footer" aria-label="Footer navigation">
       <div className="footer-shell">
-        <div className="footer-navbar">
-          <div className="footer-brand-group">
-            <div className="brand" onClick={() => navigate("/")} role="button" tabIndex="0">
-              <div className="logo">
-                <img src={logo} alt="logo" style={{ cursor: "pointer" }} />
-              </div>
-              <span className="brand-name">
-                <span className="brand-name-primary">Kin</span>
-                <span className="brand-name-secondary">nus</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="footer-search-actions">
-            <div className="footer-search-section">
-              <input
-                type="text"
-                placeholder="🔍 Search for products..."
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                className="search-input"
-              />
-            </div>
-
-            <NavLink to="/cart" className="footer-cart-link" aria-label="Open cart">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M7 4h-2l-1 2H1v2h2l3.6 7.59-1.35 2.44A2 2 0 0 0 7 21h12v-2H7.42a.25.25 0 0 1-.22-.37L8 17h7.55a2 2 0 0 0 1.8-1.11L21 8H6.21l-.94-2Zm2 13a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm9 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
-              </svg>
-              <span>Cart</span>
-            </NavLink>
-          </div>
-
-          <div className="footer-main-nav" aria-label="Footer main navigation">
-            <NavLink to="/about">About</NavLink>
-            <NavLink to="/compare">Compare</NavLink>
-          </div>
-        </div>
+        
 
         <div className="footer-social-row" aria-label="Social links">
           <a className="footer-social-link" href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">

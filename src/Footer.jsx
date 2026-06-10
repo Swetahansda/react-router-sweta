@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import logo from "./assets/logo.png";
+import logo from "./assets/logo2.png";
 
 function Footer({ searchTerm, setSearchTerm }) {
   const [email, setEmail] = useState("");

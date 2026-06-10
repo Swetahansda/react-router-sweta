@@ -6,7 +6,7 @@ import About from "./About";
 import Signin from "./Signin";
 import Signup from "./Signup";
 import "./App.css";
-import logo from "./assets/logo.png";
+
 import ForgotPassword from "./ForgotPassword";
 import AccountInfo from "./AccountInfo";
 import AccountSecurity from "./AccountSecurity";

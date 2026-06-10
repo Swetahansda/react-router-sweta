@@ -63,12 +63,12 @@ label {
 /* ========== NAVBAR ========== */
 .nav-links {
   margin: 0 auto;
-  padding: 10px 18px;
+  padding: 8px 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 25px;
+  gap: 16px;
   background: #f97316;
   border: 1px solid rgba(226, 232, 240, 0.9);
 
@@ -82,7 +82,7 @@ label {
 .nav-brand-group {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 14px;
 }
 
 .brand {
@@ -96,8 +96,8 @@ label {
 
 
 .logo img {
-  width: 190px;
-  height: 190px;
+  width: 130px;
+  height: 80px;
   border-radius: 22px;
   border: 2px solid rgba(255, 107, 53, 0.25);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -146,7 +146,7 @@ nav {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   width:max-content;
 }
 
@@ -173,7 +173,8 @@ nav span.nav-user {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
+  padding: 8px 14px;
+  min-height: 40px;
   border-radius: 999px;
   text-decoration: none;
   color: var(--dark);
@@ -368,21 +369,22 @@ nav a.active {
 .nav-auth {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .auth-btn {
-  padding: 0;
+  padding: 8px 14px;
   min-width: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
   color: #fff;
   font-weight: 700;
 }
 
 .auth-btn:hover {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.22);
   color: #fff;
   transform: translateY(-1px);
   opacity: 0.9;
@@ -2999,7 +3001,7 @@ nav a.active {
 .footer-brand-text {
   margin-top: 4px;
   max-width: 460px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #000000e6;
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -3021,7 +3023,7 @@ nav a.active {
   max-width: 620px;
   padding: 15px 21px;
   border-radius: 999px;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid rgb(21, 22, 22);
   background: rgba(255, 255, 255, 0.96);
   box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
 }
@@ -3117,6 +3119,7 @@ nav a.active {
 .footer-column h3 {
   font-size: 1.05rem;
   margin-bottom: 14px;
+  color: #111111;
 }
 
 .footer-links {
@@ -3131,7 +3134,7 @@ nav a.active {
 
 .footer-links a {
   text-decoration: none;
-  color: var(--muted);
+  color: #111111;
   display: block;
   padding: 8px 0;
   font-weight: 600;
@@ -3150,7 +3153,7 @@ nav a.active {
 }
 
 .footer-newsletter p {
-  color: var(--muted);
+  color: #111111;
   line-height: 1.7;
   margin-bottom: 16px;
 }

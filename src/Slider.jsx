@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import sareeImg from "./assets/Saree.jpg";
-
 import imge from "./assets/frontimg.png";
-import phone from "./assets/phone.png";
+import phone from "./assets/phone .png";
 
 import "./App.css";
 
@@ -24,7 +23,6 @@ const slides = [
   },
   {
     id: 3,
-    
     image: phone,
   },
 

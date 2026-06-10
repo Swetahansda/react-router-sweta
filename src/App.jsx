@@ -25,6 +25,7 @@ import VerifyEmail from "./VerifyEmail";
 import NewEmail from "./NewEmail";
 import Footer from "./Footer";
 import  cart  from "./assets/cart.webp";
+import logo2 from "./assets/logo2.png";
 
 
 
@@ -98,20 +99,6 @@ function App() {
     <>
       <div className="nav-links">
         <div className="nav-brand-group">
-          <div className="brand" onClick={handleLogoClick} role="button" tabIndex="0">
-            <div className="logo">
-              <img
-                src={logo}
-                alt="logo"
-                style={{ cursor: "pointer" }}
-              />
-            </div>
-            <span className="brand-name">
-              <span className="brand-name-primary">Kin</span>
-              <span className="brand-name-secondary">nus</span>
-            </span>
-          </div>
-
           <button
             className="nav-hamburger"
             onClick={() => setMenuOpen((open) => !open)}
@@ -123,6 +110,19 @@ function App() {
             <span className="hamburger-bar" aria-hidden="true" />
             <span className="hamburger-bar" aria-hidden="true" />
           </button>
+          
+          <div className="brand" onClick={handleLogoClick} role="button" tabIndex="0">
+            <div className="logo">
+              <img
+                src={logo2}
+                alt="logo"
+                style={{ cursor: "pointer" }}
+              />
+            </div>
+           
+          </div>
+
+          
         </div>
 
         <div className="nav-search-section">

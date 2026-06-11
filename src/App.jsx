@@ -94,6 +94,7 @@ function App() {
       navigate("/");
     }
   };
+  const showFooter = location.pathname === "/";
 
   return (
     <>
@@ -304,7 +305,7 @@ function App() {
         <Route path="/myorders" element={<MyOrders />} />
       </Routes>
 
-      <Footer searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      {showFooter ? <Footer searchTerm={searchTerm} setSearchTerm={setSearchTerm} /> : null}
     </>
   );
 }

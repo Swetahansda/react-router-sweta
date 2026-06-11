@@ -88,6 +88,7 @@ function Checkout() {
   }
 
   const items = cartData?.items?.length ? cartData.items : cartData?.title ? [cartData] : [];
+  const itemCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
 
   if (items.length === 0) {
     return (
@@ -251,7 +252,13 @@ function Checkout() {
       <div className="checkout-content">
         {/* Order Summary */}
         <div className="order-summary-section">
-          <h2>Order Summary</h2>
+          <div className="summary-header checkout-summary-header">
+            <div>
+              <span className="summary-kicker">Before you pay</span>
+              <h2>Order Summary</h2>
+            </div>
+            <span className="summary-badge">{itemCount} units</span>
+          </div>
           {savedAddresses.length > 0 ? (
             <div className="saved-address-card">
               <h3>Saved Shipping Address</h3>
@@ -284,13 +291,26 @@ function Checkout() {
                     e.target.src = placeholderImg;
                   }}
                 />
-                <div>
-                  <h4>{item.title}</h4>
-                  <p>Qty: {item.quantity || 1}</p>
+                <div className="checkout-item-details">
+                  <div className="checkout-item-top">
+                    <div className="checkout-item-copy">
+                      <h4>{item.title}</h4>
+                      <p className="checkout-item-meta">
+                        {item.category || item.seller || "Product"}
+                      </p>
+                    </div>
+                    <span className="checkout-item-qty">Qty {item.quantity || 1}</span>
+                  </div>
+
+                  <div className="checkout-item-footer">
+                    <span className="checkout-item-unit">
+                      Rs. {item.price.toLocaleString()} each
+                    </span>
+                    <span className="item-price">
+                      Rs. {(item.price * (item.quantity || 1)).toLocaleString()}
+                    </span>
+                  </div>
                 </div>
-                <span className="item-price">
-                  Rs. {(item.price * (item.quantity || 1)).toLocaleString()}
-                </span>
               </div>
             ))}
           </div>
@@ -313,6 +333,10 @@ function Checkout() {
               <span>Rs. {total.toLocaleString()}</span>
             </div>
           </div>
+
+          <p className="summary-footnote checkout-footnote">
+            Free shipping applies on orders above Rs. 500. Final payment is confirmed after checkout.
+          </p>
         </div>
 
         {/* Checkout Form */}

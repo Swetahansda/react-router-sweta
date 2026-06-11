@@ -7,15 +7,39 @@ function Addtocart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [voucherCode, setVoucherCode] = useState("");
+  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(savedCart);
+    setSelectedItems([]);
   }, []);
 
   const handleRemoveItem = (cartId) => {
     const updatedCart = cartItems.filter((item) => item.cartId !== cartId);
     setCartItems(updatedCart);
+    setSelectedItems((current) => current.filter((id) => id !== cartId));
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  const handleToggleItem = (cartId) => {
+    setSelectedItems((current) =>
+      current.includes(cartId)
+        ? current.filter((id) => id !== cartId)
+        : [...current, cartId]
+    );
+  };
+
+  const handleToggleAll = () => {
+    const allIds = cartItems.map((item) => item.cartId);
+    setSelectedItems(selectedItems.length === cartItems.length ? [] : allIds);
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedItems.length === 0) return;
+    const updatedCart = cartItems.filter((item) => !selectedItems.includes(item.cartId));
+    setCartItems(updatedCart);
+    setSelectedItems([]);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
@@ -68,15 +92,59 @@ function Addtocart() {
   const discount = calculateDiscount();
   const shipping = subtotal > 500 ? 0 : 100;
   const total = subtotal + shipping;
+  const freeShippingThreshold = 500;
+  const shippingProgress = Math.max(freeShippingThreshold - subtotal, 0);
+  const totalSelected = selectedItems.length;
+  const allSelected = cartItems.length > 0 && totalSelected === cartItems.length;
 
   return (
+
+     
     <div className="cart-container">
+    
+
       <div className="cart-header">
-        <h1>🛒 My Shopping Cart</h1>
-        {cartItems.length > 0 && (
-          <span className="item-count">{cartItems.length} items</span>
-        )}
+        <div>
+          <h1>My Shopping Cart</h1>
+          <p className="cart-subtitle">Review items, update quantity, and checkout fast.</p>
+        </div>
+        {cartItems.length > 0 && <span className="item-count">{cartItems.length} ITEM(S)</span>}
       </div>
+      
+          <div className="cart-summary">
+            <h3>Order Summary</h3>
+           
+                <br></br> 
+            <div className="summary-row">
+              <span>Subtotal ({cartItems.length} items)</span>
+              <span>Rs. {subtotal.toLocaleString()}</span>
+            </div>
+            <div className="summary-row">
+              <span>Shipping Fee</span>
+              <span>Rs. {shipping.toLocaleString()}</span>
+            </div>
+
+            <div className="summary-divider" />
+
+           
+
+            <div className="summary-row total">
+              <span>Total:</span>
+              <span>Rs. {total.toLocaleString()}</span>
+            </div>
+
+            <p className="summary-note">
+              Free shipping starts at Rs. {freeShippingThreshold.toLocaleString()}.
+            </p>
+
+            <div className="cart-actions">
+              <button onClick={handleCheckout} className="btn-checkout-primary">
+                PROCEED TO CHECKOUT({cartItems.length})
+              </button>
+            </div>
+          </div>
+
+
 
       {cartItems.length === 0 ? (
         <div className="empty-cart">
@@ -90,6 +158,16 @@ function Addtocart() {
       ) : (
         <div className="cart-content">
           <div className="cart-items-section">
+            <div className="cart-topbar">
+              <label className="cart-select-all">
+                <input type="checkbox" checked={allSelected} onChange={handleToggleAll} />
+                <span>SELECT ALL ({cartItems.length} ITEM(S))</span>
+              </label>
+              <button type="button" className="cart-delete-all" onClick={handleDeleteSelected}>
+                DELETE
+              </button>
+            </div>
+
             <div className="cart-items-header">
               <span className="col-product">Product</span>
               <span className="col-price">Price</span>
@@ -102,7 +180,12 @@ function Addtocart() {
               <div key={item.cartId || index} className="cart-seller-card">
                 <div className="cart-seller-bar">
                   <label className="cart-select">
-                    <input type="checkbox" aria-label={`Select ${item.title}`} />
+                    <input
+                      type="checkbox"
+                      aria-label={`Select ${item.title}`}
+                      checked={selectedItems.includes(item.cartId)}
+                      onChange={() => handleToggleItem(item.cartId)}
+                    />
                     <span />
                   </label>
                   <div className="cart-seller-name">
@@ -174,42 +257,6 @@ function Addtocart() {
                 </div>
               </div>
             ))}
-          </div>
-
-          <div className="cart-summary">
-            <h3>Order Summary</h3>
-            <div className="summary-row">
-              <span>Subtotal ({cartItems.length} items)</span>
-              <span>Rs. {subtotal.toLocaleString()}</span>
-            </div>
-            <div className="summary-row discount">
-              <span>Shipping Fee</span>
-              <span>Rs. {shipping.toLocaleString()}</span>
-            </div>
-
-            <div className="voucher-row">
-              <input
-                type="text"
-                value={voucherCode}
-                onChange={(e) => setVoucherCode(e.target.value)}
-                placeholder="Enter Voucher Code"
-                className="voucher-input"
-              />
-              <button type="button" className="voucher-apply-btn">
-                APPLY
-              </button>
-            </div>
-
-            <div className="summary-row total">
-              <span>Total:</span>
-              <span>Rs. {total.toLocaleString()}</span>
-            </div>
-
-            <div className="cart-actions">
-              <button onClick={handleCheckout} className="btn-checkout-primary">
-                Proceed to Checkout ({cartItems.length})
-              </button>
-            </div>
           </div>
         </div>
       )}

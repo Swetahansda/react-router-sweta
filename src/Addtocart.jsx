@@ -6,6 +6,7 @@ import placeholderImg from "./assets/Saree.jpg";
 function Addtocart() {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
+  const [voucherCode, setVoucherCode] = useState("");
 
   useEffect(() => {
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -38,20 +39,14 @@ function Addtocart() {
     }
   };
 
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-  };
+  const calculateTotal = () =>
+    cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
-  const calculateDiscount = () => {
-    return cartItems.reduce(
-      (total, item) =>
-        total + ((item.originalPrice - item.price) * item.quantity),
+  const calculateDiscount = () =>
+    cartItems.reduce(
+      (total, item) => total + ((item.originalPrice - item.price) * item.quantity),
       0
     );
-  };
 
   const handleCheckout = () => {
     if (cartItems.length === 0) {
@@ -88,16 +83,12 @@ function Addtocart() {
           <div className="empty-cart-icon">🛍️</div>
           <h2>Your cart is empty</h2>
           <p>Add some products to get started!</p>
-          <button
-            onClick={() => navigate("/")}
-            className="btn-continue-shopping"
-          >
+          <button onClick={() => navigate("/")} className="btn-continue-shopping">
             Continue Shopping
           </button>
         </div>
       ) : (
         <div className="cart-content">
-          {/* Cart Items */}
           <div className="cart-items-section">
             <div className="cart-items-header">
               <span className="col-product">Product</span>
@@ -108,112 +99,115 @@ function Addtocart() {
             </div>
 
             {cartItems.map((item, index) => (
-              <div key={item.cartId || index} className="cart-item">
-                <div className="col-product">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="cart-item-image"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = placeholderImg;
-                    }}
-                  />
-                  <div className="product-details">
-                    <h4>{item.title}</h4>
-                    <p className="category-small">{item.category}</p>
+              <div key={item.cartId || index} className="cart-seller-card">
+                <div className="cart-seller-bar">
+                  <label className="cart-select">
+                    <input type="checkbox" aria-label={`Select ${item.title}`} />
+                    <span />
+                  </label>
+                  <div className="cart-seller-name">
+                    {item.seller || item.category || "Store"}
                   </div>
                 </div>
 
-                <div className="col-price">
-                  <span className="price-value">Rs. {item.price}</span>
-                </div>
+                <div className="cart-item">
+                  <div className="col-product">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="cart-item-image"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = placeholderImg;
+                      }}
+                    />
+                    <div className="product-details">
+                      <h4>{item.title}</h4>
+                      <p className="category-small">{item.category}</p>
+                    </div>
+                  </div>
 
-                <div className="col-qty">
-                  <button
-                    className="qty-btn-sm"
-                    onClick={() =>
-                      handleQuantityChange(item.cartId, item.quantity - 1)
-                    }
-                  >
-                    −
-                  </button>
-                  <input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleQuantityChange(item.cartId, parseInt(e.target.value) || 1)
-                    }
-                    className="qty-input-sm"
-                    min="1"
-                  />
-                  <button
-                    className="qty-btn-sm"
-                    onClick={() =>
-                      handleQuantityChange(item.cartId, item.quantity + 1)
-                    }
-                  >
-                    +
-                  </button>
-                </div>
+                  <div className="col-price">
+                    <span className="price-value">Rs. {item.price}</span>
+                    {item.originalPrice ? (
+                      <span className="original-price">Rs. {item.originalPrice}</span>
+                    ) : null}
+                  </div>
 
-                <div className="col-subtotal">
-                  <strong>Rs. {(item.price * item.quantity).toLocaleString()}</strong>
-                </div>
+                  <div className="col-qty">
+                    <button
+                      className="qty-btn-sm"
+                      onClick={() => handleQuantityChange(item.cartId, item.quantity - 1)}
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(item.cartId, parseInt(e.target.value) || 1)
+                      }
+                      className="qty-input-sm"
+                      min="1"
+                    />
+                    <button
+                      className="qty-btn-sm"
+                      onClick={() => handleQuantityChange(item.cartId, item.quantity + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
 
-                <div className="col-action">
-                  <button
-                    onClick={() => handleRemoveItem(item.cartId)}
-                    className="btn-remove"
-                  >
-                    🗑️ Remove
-                  </button>
+                  <div className="col-subtotal">
+                    <strong>Rs. {(item.price * item.quantity).toLocaleString()}</strong>
+                  </div>
+
+                  <div className="col-action">
+                    <button
+                      onClick={() => handleRemoveItem(item.cartId)}
+                      className="btn-remove"
+                      aria-label={`Remove ${item.title}`}
+                    >
+                      🗑️
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Cart Summary */}
           <div className="cart-summary">
             <h3>Order Summary</h3>
             <div className="summary-row">
-              <span>Subtotal:</span>
+              <span>Subtotal ({cartItems.length} items)</span>
               <span>Rs. {subtotal.toLocaleString()}</span>
             </div>
             <div className="summary-row discount">
-              <span>Discount:</span>
-              <span>-Rs. {discount.toLocaleString()}</span>
+              <span>Shipping Fee</span>
+              <span>Rs. {shipping.toLocaleString()}</span>
             </div>
-            <div className="summary-row">
-              <span>Shipping:</span>
-              <span>{shipping === 0 ? "FREE" : `Rs. ${shipping}`}</span>
+
+            <div className="voucher-row">
+              <input
+                type="text"
+                value={voucherCode}
+                onChange={(e) => setVoucherCode(e.target.value)}
+                placeholder="Enter Voucher Code"
+                className="voucher-input"
+              />
+              <button type="button" className="voucher-apply-btn">
+                APPLY
+              </button>
             </div>
-            {shipping > 0 && (
-              <p className="shipping-note">Free shipping on orders above Rs. 500</p>
-            )}
+
             <div className="summary-row total">
               <span>Total:</span>
               <span>Rs. {total.toLocaleString()}</span>
             </div>
 
             <div className="cart-actions">
-              <button
-                onClick={handleClearCart}
-                className="btn-clear-cart"
-              >
-                Clear Cart
-              </button>
-              <button
-                onClick={() => navigate("/")}
-                className="btn-continue-shopping"
-              >
-                Continue Shopping
-              </button>
-              <button
-                onClick={handleCheckout}
-                className="btn-checkout-primary"
-              >
-                Proceed to Checkout →
+              <button onClick={handleCheckout} className="btn-checkout-primary">
+                Proceed to Checkout ({cartItems.length})
               </button>
             </div>
           </div>

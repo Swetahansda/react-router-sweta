@@ -238,25 +238,6 @@ function App() {
           <button className="mobile-menu-link" onClick={() => handleNavigate("/compare")}>Compare Product</button>
           {isLoggedIn && currentUser ? (
             <>
-              <div className="mobile-menu-profile-header">
-                {currentUser.avatar ? (
-                  <img className="mobile-menu-profile-avatar" src={currentUser.avatar} alt="Profile" />
-                ) : (
-                  <div className="mobile-menu-profile-avatar mobile-menu-profile-fallback" aria-hidden="true">
-                    👤
-                  </div>
-                )}
-                <div>
-                  <div className="mobile-menu-profile-name">{currentUser.name}</div>
-                  <div className="mobile-menu-profile-subtitle">Profile menu</div>
-                </div>
-              </div>
-              <div className="mobile-menu-heading">Profile</div>
-              <button className="mobile-menu-link" onClick={() => handleNavigate("/account-info")}>Account Info</button>
-              <button className="mobile-menu-link" onClick={() => handleNavigate("/account-security")}>Account Security</button>
-              <button className="mobile-menu-link" onClick={() => handleNavigate("/address")}>My Address</button>
-              <button className="mobile-menu-link" onClick={() => handleNavigate("/myorders")}>My Order</button>
-              <button className="mobile-menu-link" onClick={() => handleNavigate("/settings")}>App Setting</button>
               <div className="mobile-menu-language">
                 <button className="mobile-menu-link" onClick={() => setShowLanguageMenu(!showLanguageMenu)}>
                   Language: {currentLanguage}

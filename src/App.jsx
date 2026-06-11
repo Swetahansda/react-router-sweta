@@ -144,11 +144,18 @@ function App() {
             <div className="nav-profile-wrap" ref={profileMenuRef}>
               <button
                 className="nav-profile-trigger"
-                onClick={() => setShowProfileMenu((open) => !open)}
+                onClick={() => {
+                  setShowProfileMenu((open) => {
+                    const next = !open;
+                    if (!next) setShowLanguageMenu(false);
+                    return next;
+                  });
+                }}
                 aria-label="Open profile menu"
                 aria-expanded={showProfileMenu}
                 type="button"
               >
+
                 {currentUser.avatar ? (
                   <img className="nav-profile-avatar" src={currentUser.avatar} alt="Profile" />
                 ) : (
@@ -178,7 +185,7 @@ function App() {
                   <button className="nav-profile-link" onClick={() => handleNavigate("/account-security")}>Account Security</button>
                   <button className="nav-profile-link" onClick={() => handleNavigate("/address")}>My Address</button>
                   <button className="nav-profile-link" onClick={() => handleNavigate("/myorders")}>My Order</button>
-                  <button className="nav-profile-link" onClick={() => handleNavigate("/settings")}>App Setting</button>
+
 
                   <div className="nav-profile-language">
                     <button className="nav-profile-link" onClick={() => setShowLanguageMenu(!showLanguageMenu)}>
@@ -196,8 +203,9 @@ function App() {
                     )}
                   </div>
 
-                  <button className="nav-profile-link" onClick={() => handleNavigate("/policies")}>Policies</button>
+
                   <button className="nav-profile-link" onClick={() => handleNavigate("/feedback")}>Feedback</button>
+
                   <button
                     className="nav-profile-link nav-profile-signout"
                     onClick={() => {

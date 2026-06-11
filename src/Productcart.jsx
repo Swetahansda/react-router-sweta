@@ -8,8 +8,10 @@ const COMPARE_STORAGE_KEY = "compareProducts";
 function ProductCard(product) {
   const navigate = useNavigate();
   const [isCompared, setIsCompared] = useState(false);
-  const useCardActionStyle = ["Electronics", "Home", "Beauty"].includes(product.category);
+  // Use existing CSS classes to keep the same Home card button design
+  const useCardActionStyle = true;
   const isSearchResult = Boolean(product.isSearchResult);
+
 
   const { id, title, price, originalPrice, discount, rating, reviews } = product;
 

@@ -18,9 +18,7 @@ function MyOrders() {
 
   return (
     <div className="my-orders-page">
-      <button className="back-btn" onClick={() => window.history.back()}>
-        ← Back
-      </button>
+      
       <h1>🛍 My Orders</h1>
 
       <div className="order-filters">

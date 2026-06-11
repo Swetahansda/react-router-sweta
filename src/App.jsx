@@ -6,7 +6,7 @@ import About from "./About";
 import Signin from "./Signin";
 import Signup from "./Signup";
 import "./App.css";
-
+import cartwebp from "./assets/cart.web.png";
 import ForgotPassword from "./ForgotPassword";
 import AccountInfo from "./AccountInfo";
 import AccountSecurity from "./AccountSecurity";
@@ -24,7 +24,6 @@ import NewPassword from "./NewPassword";
 import VerifyEmail from "./VerifyEmail";
 import NewEmail from "./NewEmail";
 import Footer from "./Footer";
-import  cart  from "./assets/cart.webp";
 import logo2 from "./assets/logo2.png";
 
 
@@ -138,8 +137,8 @@ function App() {
 
         <nav>
           <NavLink to="/cart" className="cart-link">
-  <img src={cart} alt="Cart" className="cart-icon" />
-  <span>Cart</span>
+  <img src={cartwebp} alt="Cart" className="cart-icon" />
+
 </NavLink>
           {isLoggedIn && currentUser ? (
             <div className="nav-profile-wrap" ref={profileMenuRef}>

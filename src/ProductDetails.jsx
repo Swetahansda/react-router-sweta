@@ -105,58 +105,102 @@ function ProductDetails() {
 
   return (
     <div className="product-details-container">
-      <button className="back-btn" onClick={() => navigate("/")}>
-        ← Back
-      </button>
+      <div className="product-details-topbar">
+        <button className="back-btn product-back-btn" onClick={() => navigate("/")}>
+          ← Back to products
+        </button>
+        <div className="product-topbar-note">
+          <span className="product-stock-dot" />
+          <span>In stock and ready to ship</span>
+        </div>
+      </div>
 
       <div className="product-details-content">
-        {/* Product Image */}
-        <div className="product-details-image">
-          <img
-            src={getProductImage(product)}
-            alt={product.title}
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = productFallbackImages[product.id] || placeholderImg;
-            }}
-          />
-          {product.discount > 0 && (
-            <span className="discount-badge-large">{product.discount}% OFF</span>
-          )}
+        <div className="product-gallery-card">
+          <div className="product-details-image">
+            <img
+              src={getProductImage(product)}
+              alt={product.title}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = productFallbackImages[product.id] || placeholderImg;
+              }}
+            />
+            {product.discount > 0 && (
+              <span className="discount-badge-large">{product.discount}% OFF</span>
+            )}
+          </div>
+
+          <div className="product-gallery-highlights">
+            <div className="gallery-highlight">
+              <strong>Free delivery</strong>
+              <span>On orders above Rs. 500</span>
+            </div>
+            <div className="gallery-highlight">
+              <strong>Easy returns</strong>
+              <span>Return within 7 days</span>
+            </div>
+            <div className="gallery-highlight">
+              <strong>Secure checkout</strong>
+              <span>Safe payment methods</span>
+            </div>
+          </div>
         </div>
 
-        {/* Product Info */}
         <div className="product-details-info">
-          <div className="product-header">
+          <div className="product-hero-copy">
+            <span className="product-hero-category">{product.category}</span>
             <h1>{product.title}</h1>
-            <span className="category-tag">{product.category}</span>
+            <p className="product-hero-subtitle">
+              Premium quality, carefully selected for everyday comfort and better value.
+            </p>
           </div>
 
-          {/* Rating */}
-          <div className="rating-section">
-            <div className="stars-large">
-              <span>⭐ {product.rating} / 5</span>
+          <div className="product-header">
+            <div className="rating-section">
+              <div className="stars-large">
+                <span>⭐ {product.rating} / 5</span>
+              </div>
+              <span className="review-count">({product.reviews} customer reviews)</span>
             </div>
-            <span className="review-count">({product.reviews} customer reviews)</span>
           </div>
 
-          {/* Price */}
-          <div className="price-section">
+          <div className="price-section product-price-card">
             <div className="price-display">
-              <span className="current-price-large">Rs. {product.price.toLocaleString()}</span>
-              <span className="original-price-large">Rs. {product.originalPrice.toLocaleString()}</span>
-              <span className="discount-percent">Save {product.discount}%</span>
+              <div>
+                <span className="price-label">Special price</span>
+                <span className="current-price-large">Rs. {product.price.toLocaleString()}</span>
+              </div>
+              <div className="price-meta">
+                <span className="original-price-large">Rs. {product.originalPrice.toLocaleString()}</span>
+                <span className="discount-percent">Save {product.discount}%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="product-quick-metrics">
+            <div className="metric-chip">
+              <strong>4.2</strong>
+              <span>Avg. rating</span>
+            </div>
+            <div className="metric-chip">
+              <strong>{product.stock}</strong>
+              <span>Stock left</span>
+            </div>
+            <div className="metric-chip">
+              <strong>7 days</strong>
+              <span>Easy returns</span>
             </div>
           </div>
 
           {/* Description */}
-          <div className="description-section">
+          <div className="product-info-card description-section">
             <h3>Description</h3>
             <p>{product.description}</p>
           </div>
 
           {/* Features */}
-          <div className="features-section">
+          <div className="product-info-card features-section">
             <h3>Key Features</h3>
             <ul className="features-list">
               {product.features && product.features.map((feature, idx) => (
@@ -166,7 +210,7 @@ function ProductDetails() {
           </div>
 
           {/* Seller & Warranty Info */}
-          <div className="seller-info">
+          <div className="product-info-card seller-info">
             <div className="info-item">
               <span className="label">Seller:</span>
               <span className="value">{product.seller}</span>
@@ -182,8 +226,8 @@ function ProductDetails() {
           </div>
 
           {/* Quantity Selector */}
-          <div className="quantity-selector">
-            <label>Quantity:</label>
+          <div className="quantity-selector product-purchase-card">
+            <label>Quantity</label>
             <div className="quantity-controls">
               <button 
                 onClick={() => handleQuantityChange(-1)}
@@ -208,7 +252,7 @@ function ProductDetails() {
           </div>
 
           {/* Action Buttons */}
-          <div className="action-buttons">
+          <div className="action-buttons product-action-row">
             <button 
               onClick={handleAddToCart} 
               className="btn-add-to-cart-large"

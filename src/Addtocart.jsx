@@ -111,38 +111,39 @@ function Addtocart() {
         {cartItems.length > 0 && <span className="item-count">{cartItems.length} ITEM(S)</span>}
       </div>
       
-          <div className="cart-summary">
-            <h3>Order Summary</h3>
-           
-                <br></br> 
-            <div className="summary-row">
-              <span>Subtotal ({cartItems.length} items)</span>
-              <span>Rs. {subtotal.toLocaleString()}</span>
-            </div>
-            <div className="summary-row">
-              <span>Shipping Fee</span>
-              <span>Rs. {shipping.toLocaleString()}</span>
-            </div>
+         <div className="cart-summary">
+  <h3>Order Summary</h3>
 
-            <div className="summary-divider" />
+  <div className="summary-row">
+    <span>Subtotal ({cartItems.length} items)</span>
+    <span>Rs. {subtotal.toLocaleString()}</span>
+  </div>
 
-           
+  <div className="summary-row">
+    <span>Shipping Fee</span>
+    <span>
+      {shipping === 0 ? "FREE" : `Rs. ${shipping.toLocaleString()}`}
+    </span>
+  </div>
 
-            <div className="summary-row total">
-              <span>Total:</span>
-              <span>Rs. {total.toLocaleString()}</span>
-            </div>
+  <hr />
 
-            <p className="summary-note">
-              Free shipping starts at Rs. {freeShippingThreshold.toLocaleString()}.
-            </p>
+  <div className="summary-row total">
+    <span>Total</span>
+    <span>Rs. {total.toLocaleString()}</span>
+  </div>
 
-            <div className="cart-actions">
-              <button onClick={handleCheckout} className="btn-checkout-primary">
-                PROCEED TO CHECKOUT({cartItems.length})
-              </button>
-            </div>
-          </div>
+  <p className="summary-note">
+    Free shipping on orders above Rs. {freeShippingThreshold.toLocaleString()}
+  </p>
+
+  <button
+    onClick={handleCheckout}
+    className="btn-checkout-primary"
+  >
+    PROCEED TO CHECKOUT ({cartItems.length})
+  </button>
+</div>
 
 
 

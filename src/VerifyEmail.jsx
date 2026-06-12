@@ -7,6 +7,7 @@ function VerifyEmail() {
   const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
   const user = isLoggedIn ? JSON.parse(localStorage.getItem("user")) : null;
   const [currentPassword, setCurrentPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [error, setError] = useState("");
 
   if (!isLoggedIn || !user) {
@@ -35,6 +36,7 @@ function VerifyEmail() {
       sessionStorage.setItem("emailVerificationPassed", "true");
       navigate("/new-email");
     } else {
+      // Keep error message consistent with the password verification flow.
       setError("Current password is incorrect. Please try again.");
     }
   };
@@ -55,16 +57,25 @@ function VerifyEmail() {
               <h3>🔐 Current Password</h3>
             </div>
             <div className="edit-field">
-              <input
-                type="password"
-                name="currentPassword"
-                value={currentPassword}
-                onChange={(e) => {
-                  setCurrentPassword(e.target.value);
-                  setError("");
-                }}
-                placeholder="Enter current password"
-              />
+              <div className="input-with-toggle">
+                <input
+                  type={showCurrentPassword ? "text" : "password"}
+                  name="currentPassword"
+                  value={currentPassword}
+                  onChange={(e) => {
+                    setCurrentPassword(e.target.value);
+                    setError("");
+                  }}
+                  placeholder="Enter current password"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowCurrentPassword((visible) => !visible)}
+                >
+                  {showCurrentPassword ? "Hide" : "Show"}
+                </button>
+              </div>
               {error && <p className="form-error">{error}</p>}
               <div className="button-group">
                 <button className="btn-save" type="submit">

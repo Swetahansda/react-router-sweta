@@ -25,7 +25,7 @@ import VerifyEmail from "./VerifyEmail";
 import NewEmail from "./NewEmail";
 import Footer from "./Footer";
 import logo2 from "./assets/logo2.png";
-
+import bellicon from "./assets/bellicon.png";
 
 
  
@@ -110,7 +110,7 @@ function App() {
             <span className="hamburger-bar" aria-hidden="true" />
             <span className="hamburger-bar" aria-hidden="true" />
           </button>
-          
+             
           <div className="brand" onClick={handleLogoClick} role="button" tabIndex="0">
             <div className="logo">
               <img
@@ -121,7 +121,7 @@ function App() {
             </div>
            
           </div>
-
+  
           
         </div>
 
@@ -137,9 +137,9 @@ function App() {
 
         <nav>
           <NavLink to="/cart" className="cart-link">
-  <img src={cartwebp} alt="Cart" className="cart-icon" />
-
-</NavLink>
+            <img src={cartwebp} alt="Cart" className="cart-icon" />
+            <img src={bellicon} alt="Notifications" className="cart-icon bell-icon" />
+          </NavLink>
           {isLoggedIn && currentUser ? (
             <div className="nav-profile-wrap" ref={profileMenuRef}>
               <button
@@ -313,6 +313,16 @@ function App() {
       </Routes>
 
       {showFooter ? <Footer searchTerm={searchTerm} setSearchTerm={setSearchTerm} /> : null}
+
+      <button
+        type="button"
+        className="floating-feedback-btn"
+        onClick={() => navigate('/feedback')}
+        aria-label="Open Feedback"
+        title="Feedback"
+      >
+        💬
+      </button>
     </>
   );
 }

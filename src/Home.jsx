@@ -11,7 +11,16 @@ function Home({ searchTerm, setSearchTerm }) {
 
   // Filter products based on search and category
   useEffect(() => {
+        fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        setProduct(json);
+      })
+      .catch((err) => console.error("Error:", err));
     let filtered = products;
+
+
 
     // Filter by category
     if (selectedCategory !== "all") {
@@ -37,6 +46,19 @@ function Home({ searchTerm, setSearchTerm }) {
       resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [searchTerm, filteredProducts.length]);
+    
+    const product = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("https://fakestoreapi.com/products");
+      const result = await response.json();
+      setData(result); // Save the result to state
+    } catch (error) {
+      console.error("API call failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="home-container">
